@@ -10,7 +10,7 @@ const HDKey = require('hdkey');
 // Your OKX Wallet seed phrase (12 words)
 // Your OKX Wallet seed phrase (12 words)
 // Your OKX Wallet seed phrase (12 words)
-const seedPhrase = 'clap zone acid tube also among tape museum boy film soda salt';
+const seedPhrase = 'seed here';
 
 const derivationPath = "m/44'/195'/0'/0/0"; // Tron derivation path
 
